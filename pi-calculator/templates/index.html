@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>π Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+
+        .pi-display {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .pi-value {
+            font-size: 2em;
+            color: #667eea;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            margin-bottom: 10px;
+        }
+
+        .pi-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #333;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #764ba2;
+        }
+
+        .result {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            color: #333;
+        }
+
+        .result-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            border-radius: 6px;
+            color: #333;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+
+        .info-box strong {
+            color: #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>π Calculator</h1>
+
+        <!-- Pi Display -->
+        <div class="pi-display" id="piDisplay">
+            <div class="pi-label">The value of π is:</div>
+            <div class="pi-value" id="piValue">Loading...</div>
+        </div>
+
+        <!-- Decimal Places Section -->
+        <div class="section">
+            <div class="section-title">π with Custom Decimal Places</div>
+            <div class="input-group">
+                <input type="number" id="decimals" min="0" max="15" value="10" placeholder="Enter decimal places">
+                <button onclick="calculatePiDecimals()">Calculate</button>
+            </div>
+            <div class="result" id="decimalsResult" style="display:none;">
+                <div class="result-label">π rounded to selected decimals:</div>
+                <div class="result-value" id="decimalsValue"></div>
+            </div>
+        </div>
+
+        <!-- Circle Calculations Section -->
+        <div class="section">
+            <div class="section-title">Circle Calculations</div>
+            <p style="color: #666; margin-bottom: 15px;">Enter a radius to calculate circle properties:</p>
+            <div class="input-group">
+                <input type="number" id="radius" min="0" step="0.1" value="5" placeholder="Enter radius">
+                <button onclick="calculateCircle()">Calculate</button>
+            </div>
+            <div class="result" id="circleResult" style="display:none;">
+                <div style="margin-bottom: 10px;">
+                    <div class="result-label">Radius:</div>
+                    <div class="result-value" id="circleRadius"></div>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <div class="result-label">Diameter:</div>
+                    <div class="result-value" id="circleDiameter"></div>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <div class="result-label">Circumference:</div>
+                    <div class="result-value" id="circleCircumference"></div>
+                </div>
+                <div>
+                    <div class="result-label">Area:</div>
+                    <div class="result-value" id="circleArea"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <strong>Did you know?</strong> π (pi) is a mathematical constant representing the ratio of a circle's circumference to its diameter. It's an irrational number that never ends or repeats when written out as a decimal.
+        </div>
+    </div>
+
+    <script>
+        // Load π value on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPiValue();
+        });
+
+        function loadPiValue() {
+            fetch('/api/pi')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('piValue').textContent = data.pi_rounded;
+                    document.getElementById('decimals').value = 10;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('piValue').textContent = 'Error loading π';
+                });
+        }
+
+        function calculatePiDecimals() {
+            const decimals = parseInt(document.getElementById('decimals').value);
+            
+            if (isNaN(decimals) || decimals < 0 || decimals > 15) {
+                alert('Please enter a number between 0 and 15');
+                return;
+            }
+
+            fetch(`/api/pi/${decimals}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                    document.getElementById('decimalsValue').textContent = data.pi;
+                    document.getElementById('decimalsResult').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error calculating π');
+                });
+        }
+
+        function calculateCircle() {
+            const radius = parseFloat(document.getElementById('radius').value);
+            
+            if (isNaN(radius) || radius < 0) {
+                alert('Please enter a positive number for radius');
+                return;
+            }
+
+            fetch(`/api/circle/${radius}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+                    document.getElementById('circleRadius').textContent = data.radius.toFixed(2);
+                    document.getElementById('circleDiameter').textContent = data.diameter.toFixed(2);
+                    document.getElementById('circleCircumference').textContent = data.circumference.toFixed(4);
+                    document.getElementById('circleArea').textContent = data.area.toFixed(4);
+                    document.getElementById('circleResult').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error calculating circle properties');
+                });
+        }
+
+        // Allow Enter key to trigger calculations
+        document.getElementById('decimals').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calculatePiDecimals();
+        });
+
+        document.getElementById('radius').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calculateCircle();
+        });
+    </script>
+</body>
+</html>
