@@ -1,0 +1,100 @@
+{
+  "books": [
+    {
+      "id": "python-programming",
+      "title": "Python Programming for Beginners",
+      "author": "Mark Lutz",
+      "year": 2013,
+      "category": "Programming",
+      "description": "A comprehensive guide to learning Python programming. Covers fundamental concepts like data types, functions, modules, and object-oriented programming. Perfect for beginners starting their coding journey."
+    },
+    {
+      "id": "machine-learning-basics",
+      "title": "Machine Learning: A Probabilistic Perspective",
+      "author": "Kevin P. Murphy",
+      "year": 2012,
+      "category": "Machine Learning",
+      "description": "An introduction to machine learning that uses probabilistic models to understand data. Covers supervised and unsupervised learning, including classification, regression, and clustering techniques."
+    },
+    {
+      "id": "web-development-mdn",
+      "title": "Web Development with HTML, CSS, and JavaScript",
+      "author": "Jon Duckett",
+      "year": 2011,
+      "category": "Web Development",
+      "description": "Learn how to build interactive websites using HTML for structure, CSS for styling, and JavaScript for interactivity. Includes practical examples and best practices for modern web development."
+    },
+    {
+      "id": "data-science-handbook",
+      "title": "Python Data Science Handbook",
+      "author": "Jake VanderPlas",
+      "year": 2016,
+      "category": "Data Science",
+      "description": "Essential tools and techniques for working with data in Python. Covers NumPy, Pandas, Matplotlib, and scikit-learn libraries for data analysis, visualization, and machine learning."
+    },
+    {
+      "id": "algorithms-design",
+      "title": "Algorithm Design Manual",
+      "author": "Steven S. Skiena",
+      "year": 2008,
+      "category": "Computer Science",
+      "description": "A practical guide to designing and analyzing algorithms. Covers sorting, searching, graph algorithms, and dynamic programming with real-world applications and implementations."
+    },
+    {
+      "id": "database-systems",
+      "title": "Database System Concepts",
+      "author": "Abraham Silberschatz",
+      "year": 2010,
+      "category": "Databases",
+      "description": "Comprehensive coverage of database design, SQL, transaction management, and distributed databases. Essential knowledge for anyone working with data storage systems."
+    },
+    {
+      "id": "quantum-physics",
+      "title": "Introduction to Quantum Physics",
+      "author": "Kenneth S. Krane",
+      "year": 2012,
+      "category": "Physics",
+      "description": "An introductory course in quantum mechanics covering wave-particle duality, the Schrödinger equation, quantum states, and applications in atomic and molecular physics."
+    },
+    {
+      "id": "biology-genetics",
+      "title": "Molecular Biology of the Gene",
+      "author": "James D. Watson",
+      "year": 2013,
+      "category": "Biology",
+      "description": "Explore the structure and function of genes, DNA replication, transcription, and translation. Covers genetic regulation and applications in biotechnology and medicine."
+    },
+    {
+      "id": "world-history",
+      "title": "A Brief History of Time",
+      "author": "Stephen Hawking",
+      "year": 1988,
+      "category": "Science",
+      "description": "From the Big Bang to Black Holes. Hawking explains complex cosmological concepts in accessible language, covering relativity, quantum mechanics, and the nature of space and time."
+    },
+    {
+      "id": "psychology-basics",
+      "title": "Psychology: Themes and Variations",
+      "author": "Wayne Weiten",
+      "year": 2012,
+      "category": "Psychology",
+      "description": "An introduction to the science of psychology covering learning, memory, cognition, development, and mental health. Includes contemporary research and practical applications."
+    },
+    {
+      "id": "economics-101",
+      "title": "Economics: The User's Guide",
+      "author": "Ha-Joon Chang",
+      "year": 2014,
+      "category": "Economics",
+      "description": "Make sense of economics without jargon. Ha-Joon Chang explains the everyday economics of how the world works, from supply and demand to market failures."
+    },
+    {
+      "id": "history-renaissance",
+      "title": "The Renaissance: A Very Short Introduction",
+      "author": "Jerry Brotton",
+      "year": 2006,
+      "category": "History",
+      "description": "Discover the transformative period of the Renaissance covering art, literature, science, and culture. Explore the emergence of humanism and its impact on European civilization."
+    }
+  ]
+}
