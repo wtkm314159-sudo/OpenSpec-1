@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learner Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .search-section {
+            margin-bottom: 30px;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #searchInput {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 1em;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        #searchButton {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #searchButton:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        #searchButton:active {
+            transform: translateY(0);
+        }
+
+        .search-hint {
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            font-weight: 600;
+            margin: 20px 0;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-section {
+            margin-top: 30px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .results-title {
+            color: #333;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .results-count {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .results-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .result-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .result-item:hover {
+            background: #f0f2ff;
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .result-title {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1.05em;
+            margin-bottom: 8px;
+        }
+
+        .result-snippet {
+            color: #666;
+            font-size: 0.95em;
+            line-height: 1.5;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #999;
+            padding: 30px 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #c33;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .error-message.active {
+            display: block;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .modal-title {
+            color: #333;
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+
+        .modal-body {
+            color: #666;
+            line-height: 1.7;
+            font-size: 0.95em;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            border-radius: 6px;
+            color: #333;
+            font-size: 0.9em;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Learner Interface</h1>
+            <p class="subtitle">Search for books and authors on Open Library</p>
+        </div>
+
+        <div class="search-section">
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Enter a book title, author, or topic... (e.g., 'Python Programming', 'Albert Einstein')"
+                    autocomplete="off"
+                >
+                <button id="searchButton">Search</button>
+            </div>
+            <div class="search-hint">💡 Tip: Search for any book title, author name, or subject</div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="loading" id="loading">
+            <span class="spinner"></span>
+            <span>Searching educational resources...</span>
+        </div>
+
+        <div class="results-section" id="resultsSection" style="display: none;">
+            <div class="results-header">
+                <div class="results-title">Search Results</div>
+                <div class="results-count" id="resultsCount">0</div>
+            </div>
+            <div class="results-list" id="resultsList"></div>
+        </div>
+
+        <div class="no-results" id="noResults" style="display: none;">
+            🔍 No results found. Try using different keywords.
+        </div>
+
+        <div class="info-box">
+            <strong>About:</strong> This interface searches the Open Library (archive.org), an open-source, reliable source for book information. Click on any result to view the book description.
+        </div>
+    </div>
+
+    <!-- Modal for article details -->
+    <div class="modal" id="articleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle"></div>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const loading = document.getElementById('loading');
+        const resultsSection = document.getElementById('resultsSection');
+        const resultsList = document.getElementById('resultsList');
+        const noResults = document.getElementById('noResults');
+        const resultsCount = document.getElementById('resultsCount');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // Handle search
+        searchButton.addEventListener('click', performSearch);
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') performSearch();
+        });
+
+        async function performSearch() {
+            const query = searchInput.value.trim();
+
+            if (!query) {
+                showError('Please enter a search query');
+                return;
+            }
+
+            loading.classList.add('active');
+            errorMessage.classList.remove('active');
+            resultsSection.style.display = 'none';
+            noResults.style.display = 'none';
+
+            try {
+                const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                
+                const data = await response.json();
+
+                if (!response.ok) {
+                    showError(data.error || `Error: ${response.status} ${response.statusText}`);
+                    return;
+                }
+
+                if (data.error) {
+                    showError(data.error);
+                    return;
+                }
+
+                if (data.results.length === 0) {
+                    noResults.style.display = 'block';
+                    resultsSection.style.display = 'none';
+                } else {
+                    displayResults(data.results);
+                    resultsCount.textContent = data.count;
+                    resultsSection.style.display = 'block';
+                    noResults.style.display = 'none';
+                }
+            } catch (error) {
+                showError(`Error: ${error.message}. Please check your internet connection and try again.`);
+                console.error('Search error:', error);
+            } finally {
+                loading.classList.remove('active');
+            }
+        }
+
+        function displayResults(results) {
+            resultsList.innerHTML = '';
+
+            results.forEach((result) => {
+                const div = document.createElement('div');
+                div.className = 'result-item';
+                div.innerHTML = `
+                    <div class="result-title">${escapeHtml(result.title)}</div>
+                    <div class="result-snippet">${escapeHtml(result.snippet)}</div>
+                `;
+                div.addEventListener('click', () => openArticle(result.id));
+                resultsList.appendChild(div);
+            });
+        }
+
+        async function openArticle(bookId) {
+            const modal = document.getElementById('articleModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+
+            modalTitle.textContent = 'Loading...';
+            modalBody.innerHTML = '<p>Fetching book details...</p>';
+            modal.classList.add('active');
+
+            try {
+                const response = await fetch(`/api/book/${encodeURIComponent(bookId)}`);
+
+                if (!response.ok) {
+                    throw new Error('Failed to load book details');
+                }
+
+                const data = await response.json();
+                modalTitle.textContent = data.title;
+                let content = `<strong>Description:</strong><br/>${data.description}`;
+                if (data.first_publish_year) {
+                    content += `<br/><br/><strong>First Published:</strong> ${data.first_publish_year}`;
+                }
+                modalBody.innerHTML = content;
+            } catch (error) {
+                modalTitle.textContent = 'Error';
+                modalBody.innerHTML = '<p style="color: #c33;">Failed to load book details. Please try again.</p>';
+                console.error('Book fetch error:', error);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('articleModal').classList.remove('active');
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('active');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Close modal when clicking outside of it
+        document.getElementById('articleModal').addEventListener('click', (e) => {
+            if (e.target.id === 'articleModal') {
+                closeModal();
+            }
+        });
+
+        // Focus input on load
+        searchInput.focus();
+    </script>
+</body>
+</html>
